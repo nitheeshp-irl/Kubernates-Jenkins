@@ -64,7 +64,7 @@ Target CPU Utilization: 80%
 
 Deployment Steps
 
-Apply the PersistentVolumeClaim (PVC) for Jenkins data:
+Apply the PersistentVolumeClaim (PVC) for Jenkins data
 
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -81,12 +81,13 @@ Save this to a file (e.g., pvc.yaml) and apply it:
 
 kubectl apply -f pvc.yaml
 
-Deploy the StatefulSet and HPA:
+Deploy the StatefulSet and HPA
+
 Save the provided YAML configuration to a file (e.g., jenkins-deployment.yaml) and apply it:
 
 kubectl apply -f jenkins-deployment.yaml
 
-Verify the deployment:
+Verify the deployment
 
 kubectl get statefulsets
 kubectl get pods
@@ -94,11 +95,15 @@ kubectl get hpa
 
 Accessing Jenkins
 
-Expose the Jenkins service using a LoadBalancer or Ingress (not included in this configuration).
+Expose the Jenkins service
 
-Once exposed, access Jenkins through the browser at the service URL.
+Expose the service using a LoadBalancer or Ingress (not included in this configuration).
 
-Retrieve the initial admin password from the Jenkins pod:
+Access Jenkins
+
+Access Jenkins through the browser at the service URL.
+
+Retrieve the initial admin password
 
 kubectl exec -it <jenkins-pod-name> -- cat /var/jenkins_home/secrets/initialAdminPassword
 
@@ -112,15 +117,15 @@ Update the jenkins-home PVC definition for custom storage requirements.
 
 Troubleshooting
 
-Check pod logs for errors:
+Check pod logs for errors
 
 kubectl logs <jenkins-pod-name>
 
-Describe the StatefulSet for debugging:
+Describe the StatefulSet for debugging
 
 kubectl describe statefulset jenkins-standalone-statefulset
 
-Validate HPA metrics:
+Validate HPA metrics
 
 kubectl top pod
 
@@ -131,4 +136,3 @@ Contributions are welcome! Please open an issue or submit a pull request.
 License
 
 This repository is licensed under the MIT License. See the LICENSE file for details.
-

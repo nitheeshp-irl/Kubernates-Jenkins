@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jenkins-standalone-statefulset
+spec:
+  serviceName: "jenkins-service"
+  selector:
+    matchLabels:
+      app: jenkins-master
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jenkins-master
+    spec:
+      securityContext:
+        fsGroup: 1000 
+        runAsUser: 1000
+      serviceAccountName: jenkins-service-account
+      containers:
+      - name: jenkins-master
+        image: jenkins/jenkins:lts
+        volumeMounts:
+        - mountPath: "/var/jenkins_home"
+          name: jenkins-home
+          subPath: jenkins_home
+        livenessProbe:
+          httpGet:
+            path: /login
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 15
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - jenkins-master
+            topologyKey: "kubernetes.io/hostname"
+      volumes:
+        - name: jenkins-home
+          persistentVolumeClaim:
+              claimName: jenkins-home
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: jenkins-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: jenkins-standalone-statefulset
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80

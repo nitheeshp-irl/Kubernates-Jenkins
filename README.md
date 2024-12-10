@@ -1,3 +1,5 @@
+Jenkins StatefulSet Deployment on Kubernetes
+
 This repository contains the configuration files to deploy a Jenkins master as a Kubernetes StatefulSet with an integrated Horizontal Pod Autoscaler (HPA).
 
 Overview
@@ -136,3 +138,4 @@ Contributions are welcome! Please open an issue or submit a pull request.
 License
 
 This repository is licensed under the MIT License. See the LICENSE file for details.
+

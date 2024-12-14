@@ -1,0 +1,70 @@
+pipeline {
+    agent {
+        kubernetes {
+            yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: shell
+    image: ubuntu
+    command:
+    - sleep
+    args:
+    - infinity
+    securityContext:
+      runAsUser: 1000
+  - name: busybox
+    image: busybox
+    command:
+    - sleep
+    args:
+    - infinity
+  - name: alpine
+    image: alpine
+    command:
+    - sleep
+    args:
+    - infinity
+'''
+            defaultContainer 'shell'
+            retries 2
+        }
+    }
+    stages {
+        stage('Run in shell') {
+            steps {
+                container('shell') {
+                    sh '''
+                        echo "Running in shell container"
+                        hostname
+                    '''
+                }
+            }
+        }
+        stage('Run in busybox') {
+            steps {
+                container('busybox') {
+                    sh '''
+                        echo "Running in busybox container"
+                        echo "Hello from busybox!"
+                        ls -la
+                    '''
+                }
+            }
+        }
+        stage('Run in alpine') {
+            steps {
+                container('alpine') {
+                    sh '''
+                        echo "Running in alpine container"
+                        echo "Installing curl"
+                        apk add --no-cache curl
+                        echo "Testing curl"
+                        curl --version
+                    '''
+                }
+            }
+        }
+    }
+}

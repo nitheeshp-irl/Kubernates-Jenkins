@@ -15,3 +15,4 @@ spec:
     - name: jnlp-port
       port: 50000
       targetPort: 50000
+  sessionAffinity: ClientIP    
